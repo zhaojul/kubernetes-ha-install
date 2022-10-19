@@ -1,0 +1,26 @@
+{
+  "exec-opts": [
+    "native.cgroupdriver=systemd"
+  ],
+  "registry-mirrors" : [
+    "http://docker.mirrors.ustc.edu.cn"
+  ],
+  "graph": "/var/lib/docker",
+  "max-concurrent-downloads": 20,
+  "max-concurrent-uploads": 10,
+  "default-ulimits": {
+    "nofile": {
+      "Name": "nofile",
+      "Hard": 655360,
+      "Soft": 655360
+    }
+  },
+  "log-opts": {
+    "max-size": "20m",
+    "max-file": "5"
+  },
+  "log-driver": "json-file",
+  "storage-driver": "overlay2",
+  "ipv6": false
+}
+
