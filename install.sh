@@ -28,7 +28,7 @@ K8S_CORE_INSTALL() {
     sleep 10s
     ./scripts/09-kube-scheduler-install.sh
     sleep 10s
-    ./scripts/10-kube-docker-install.sh
+    ./scripts/10-kube-containerd-install.sh
     sleep 10s
     ./scripts/11-kubelet-install.sh
     sleep 10s
