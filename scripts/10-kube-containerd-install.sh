@@ -20,7 +20,7 @@ for node_ip in ${NODE_IPS[@]}
           ssh root@${node_ip} "mkdir -p /etc/containerd; containerd config default > /etc/containerd/config.toml;"
           ssh root@${node_ip} 'sed -i -e "s#SystemdCgroup = false#SystemdCgroup = true#" -e "s#k8s.gcr.io#docker.io/kubelibrary#" -e "s#registry.k8s.io#docker.io/kubelibrary#" /etc/containerd/config.toml;'
           ssh root@${node_ip} "systemctl daemon-reload; systemctl enable containerd.service --now;"
-          sleep 5s
+          sleep 5
         fi
    done
 done
