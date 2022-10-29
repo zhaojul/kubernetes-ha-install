@@ -7,6 +7,7 @@ echo "             Kubernetes Setup Tools"
 echo "*******************************************************"
 
 K8S_OS_INIT() {
+    chmod 755 ./scripts/*.sh
     ./scripts/01-kube-system-config.sh
     sleep 3s
     ./scripts/02-kube-components-download.sh

@@ -105,22 +105,22 @@ while true
 do
 echo "
 选择Kubernetes集群网络组件类型, 默认安装Flannel网络组件.
-Flannel (default)    [1], 
+Calico (default)     [1], 
 Canal                [2],
-Calico               [3],
+Flannel              [3],
 ";
 read -r TYPE
 if [ "x${TYPE}" = "x" ] || [ "x${TYPE}" = "x1" ]; then
-    echo "你选择了安装Flannel,安装工具会自动安装该网络组件";
-    KUBE_NETWORK_PLUGIN="flannel"
+    echo "你选择了安装Calico,安装工具会自动安装该网络组件";
+    KUBE_NETWORK_PLUGIN="calico"
     break;
 elif [ "x${TYPE}" = "x2" ]; then
     echo "你选择了安装Canal,安装工具会自动安装该网络组件";
     KUBE_NETWORK_PLUGIN="canal"
     break;
 elif [ "x${TYPE}" = "x3" ]; then
-    echo "你选择了安装Calico,安装工具会自动安装该网络组件";
-    KUBE_NETWORK_PLUGIN="calico"
+    echo "你选择了安装Flannel,安装工具会自动安装该网络组件";
+    KUBE_NETWORK_PLUGIN="flannel"
     break;
 else
    echo -e "\033[31mInvalid Input\033[0m";
