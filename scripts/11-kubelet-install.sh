@@ -2,6 +2,21 @@
 . ./.env
 echo ">>>>>> 部署kubelet <<<<<<"
 
+if [ ${MASTER_IS_WORKER} = true ]; then
+  i=0
+  for node_ip in ${MASTER_IPS[@]};
+  do
+    echo ">>> ${node_ip}"
+    BOOTSTRAP_TOKEN=`kubeadm token create --description kubelet-bootstrap-token --groups system:bootstrappers:${MASTER_NAMES[i]} --kubeconfig ./work/pki/admin.conf`
+    sleep 5s
+    kubectl config set-cluster kubernetes --certificate-authority=./work/pki/ca.crt  --embed-certs=true --server=https://${HAPROXY_IP}:6443 --kubeconfig=./work/kubelet-bootstrap-${node_ip}.kubeconfig
+    kubectl config set-credentials kubelet-bootstrap --token=${BOOTSTRAP_TOKEN} --kubeconfig=./work/kubelet-bootstrap-${node_ip}.kubeconfig
+    kubectl config set-context default --cluster=kubernetes --user=kubelet-bootstrap --kubeconfig=./work/kubelet-bootstrap-${node_ip}.kubeconfig
+    kubectl config use-context default --kubeconfig=./work/kubelet-bootstrap-${node_ip}.kubeconfig
+    let i++
+  done
+fi
+
 i=0
 for node_ip in ${NODE_IPS[@]};
 do
@@ -15,8 +30,15 @@ do
   let i++
 done
 
-echo ">>> 推送kubelet到所有Node节点"
-for node_ip in ${NODE_IPS[@]};
+
+if [ ${MASTER_IS_WORKER} = true ]; then
+NODE="${MASTER_IPS[@]} ${NODE_IPS[@]}"
+else
+NODE="${NODE_IPS[@]}"
+fi
+
+echo ">>> 推送kubelet到所有节点"
+for node_ip in ${NODE};
 do
   echo ">>> ${node_ip}"
   scp -r ./work/components/kubernetes/server/bin/kubelet root@${node_ip}:/usr/bin/kubelet
@@ -30,14 +52,14 @@ do
 done
 
 echo ">>> 启动kubelet服务"
-for node_ip in ${NODE_IPS[@]};
+for node_ip in ${NODE};
 do
   ssh root@${node_ip} "systemctl daemon-reload; systemctl enable kubelet.service --now;"
   sleep 5s;
   ssh root@${node_ip} "systemctl status kubelet.service"
 done
 
-for node in ${NODE_IPS[@]};
+for node in ${NODE};
  do
   while true
   do
@@ -57,6 +79,14 @@ sleep 10s;
 kubectl --kubeconfig=./work/pki/admin.conf get csr
 echo ">>> Approve kubelet server cert csr"
 kubectl --kubeconfig=./work/pki/admin.conf get csr | grep Pending | awk '{print $1}' | xargs kubectl --kubeconfig=./work/pki/admin.conf certificate approve
+
+if [ ${MASTER_IS_WORKER} = true ]; then
+  for master in ${MASTER_NAMES[@]};
+  do
+    echo ">>> Add label kubernetes.io/role=agent for ${node}"
+    kubectl --kubeconfig=./work/pki/admin.conf taint nodes ${master} node-role.kubernetes.io/master=:NoSchedule
+  done
+fi
 
 for node in ${NODE_NAMES[@]};
 do 

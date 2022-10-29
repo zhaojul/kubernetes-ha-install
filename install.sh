@@ -49,17 +49,18 @@ K8S_APP_INSTALL() {
     sleep 10s
     ./scripts/16-kube-state-metrics-install.sh
     sleep 10s
+    ./scripts/17-metrics-server-install.sh
 }
 
 K8S_CSI_DRIVER_INSTALL() {
-    ./scripts/17-csi-driver-nfs-install.sh
+    ./scripts/18-csi-driver-nfs-install.sh
     sleep 10s
-    ./scripts/18-csi-driver-smb-install.sh
+    ./scripts/19-csi-driver-smb-install.sh
     sleep 10s
 }
 
 ARCHIVE() {
-    ./scripts/19-archive-install.sh
+    ./scripts/20-archive-install.sh
 }
 
 

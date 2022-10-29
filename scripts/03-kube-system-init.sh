@@ -52,7 +52,7 @@ do
   ssh root@${node} "iptables -F && iptables -X && iptables -F -t nat && iptables -X -t nat && iptables -P FORWARD ACCEPT"
   ssh root@${node} "swapoff -a; sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab; setenforce 0"
   ssh root@${node} "sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config"
-  ssh root@${node} "yum -y install epel-release; yum -y install chrony curl wget vim sysstat net-tools openssl openssh lsof socat nfs-utils cifs-utils; systemctl disable rpcbind;"
+  ssh root@${node} "yum -y install epel-release; yum -y install yum-utils chrony curl wget vim sysstat net-tools openssl openssh lsof socat nfs-utils cifs-utils; systemctl disable rpcbind;"
   ssh root@${node} "timedatectl set-timezone Asia/Shanghai; timedatectl set-local-rtc 0; systemctl restart chronyd; systemctl enable chronyd; systemctl restart rsyslog; systemctl restart crond"
   ssh root@${node} "cp /etc/sysctl.conf /etc/sysctl.conf.back; echo > /etc/sysctl.conf; sysctl -p"
   scp -r ./config/sysctl/kubernetes.conf root@${node}:/etc/sysctl.d/kubernetes.conf
@@ -124,6 +124,20 @@ done
 
 
 echo ">>>>>> 导入kube-node需要的环境变量 <<<<<<"
+
+if [ ${MASTER_IS_WORKER} = true ]; then
+i=o
+for node in ${MASTER_IPS[@]};
+do
+cat > ./work/kube-node-${node} <<EOF
+NODE_NAME="${MASTER_NAMES[i]}"
+KUBE_POD_CIDR="${KUBE_POD_CIDR}"
+EOF
+scp -r ./work/kube-node-${node} root@${node}:/etc/sysconfig/kube-node
+let i++
+done
+fi
+
 i=o
 for node in ${NODE_IPS[@]};
 do

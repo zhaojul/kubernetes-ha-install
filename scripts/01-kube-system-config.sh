@@ -1,13 +1,10 @@
 #!/bin/bash
 clear
-echo "---------------------------------"
-echo "k8s安装配置向导"
-echo "此向导需要配置以下内容:"
-echo "---------------------------------"
-echo " * 集群信息,包括部门信息、环境信息、节点池信息; 此项设置为自动生成主机名并配置为Kubernetes节点的名称; 输入IP的过程请务必仔细！ "
+echo "------------------------------------------------------------------------------------------------------------------"
+echo " * 你需要配置以下内容:"
 echo " * Kubernetes所需Master集群的IP地址信息,需要三个IP地址(仅支持3节点的Master集群,其他节点数量暂时不支持);"
 echo " * HAproxy节点地址,不能是Kubernete任何节点IP,需要地址不被占用;"
-echo " * Kubernetes集群网路类型,默认flannel,可选canal或calico;"
+echo " * Kubernetes集群网路类型,默认calico,可选canal或flannel;"
 echo " * 请确保master节点和node节点的root密码相同."
 echo "------------------------------------------------------------------------------------------------------------------"
 echo ""
@@ -32,9 +29,9 @@ done
 NODEPOOLID=`cat /dev/urandom | head -n 20 | cksum | head -c 8`
 
 READPAR1 () {
-read -p "请输入集群名称(默认Kubernetes), 仅支持小写英文输入: " CLUSTERNAME
+read -p "请输入集群名称(默认kubernetes), 仅支持小写英文输入: " CLUSTERNAME
 CLUSTERNAME=${CLUSTERNAME}
-[ ! "${CLUSTERNAME}x" == "x" ] || CLUSTERNAME="Kubernetes"
+[ ! "${CLUSTERNAME}x" == "x" ] || CLUSTERNAME="kubernetes"
 read -p "请输入节点池名称(默认default), 仅支持小写英文输入: " NODEPOOLNAME
 NODEPOOLNAME=${NODEPOOLNAME}
 [ ! "${NODEPOOLNAME}x" == "x" ] || NODEPOOLNAME="default"
@@ -54,6 +51,25 @@ if [ "${K8S_M1}x" == "x" ] || [ "${K8S_M2}x" == "x" ] || [ "${K8S_M3}x" == "x" ]
    echo "您输入了空值,请重新输入"
    READPAR2
 fi
+
+while true
+do
+   read -r -p "是否将Master加入到Worker节点中? [Y/N] " ACCEPT
+   case ${ACCEPT} in
+       [yY][eE][sS]|[yY])
+       MASTER_IS_WORKER="true";
+       break;
+       ;;
+       [nN][oO]|[nN])
+       MASTER_IS_WORKER="false";
+       break;
+       ;;
+       *)
+       echo -e "\033[31mInvalid Input\033[0m";
+       ;;
+  esac
+done
+
 }
 
 READPAR3 () {
@@ -104,7 +120,7 @@ READPAR6 () {
 while true
 do
 echo "
-选择Kubernetes集群网络组件类型, 默认安装Flannel网络组件.
+选择Kubernetes集群网络组件类型, 默认安装Calico网络组件.
 Calico (default)     [1], 
 Canal                [2],
 Flannel              [3],
@@ -201,7 +217,7 @@ i=0
 for ip in ${NODE_IPS[@]}
 do
 let i++
-  echo "k8s-${NODEPOOLNAME}-agentpool-${NODEPOOLID}-${i}"
+  echo "k8s-${NODEPOOLNAME}-nodepool-${NODEPOOLID}-${i}"
 done
 }
 
@@ -276,6 +292,7 @@ MASTER_IPS=( ${masterip} )
 NODE_NAMES=( ${NODE_NAMES} )
 NODE_IPS=( ${nodeip} )
 ROOT_PWD="$ROOT_PWD"
+MASTER_IS_WORKER=${MASTER_IS_WORKER}
 
 KUBE_NETWORK_IFACE="eth0"
 KUBE_NETWORK_PLUGIN="${KUBE_NETWORK_PLUGIN}"

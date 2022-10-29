@@ -2,8 +2,14 @@
 . ./.env
 echo ">>>>>> 部署kube-proxy <<<<<<"
 
-echo ">>> 推送kube-proxy到所有Node节点"
-for node_ip in ${NODE_IPS[@]};
+if [ ${MASTER_IS_WORKER} = true ]; then
+NODE="${MASTER_IPS[@]} ${NODE_IPS[@]}"
+else
+NODE="${NODE_IPS[@]}"
+fi
+
+echo ">>> 推送kube-proxy到所有节点"
+for node_ip in ${NODE};
 do
   echo ">>> ${node_ip}"
   scp -r ./work/components/kubernetes/server/bin/kube-proxy root@${node_ip}:/usr/bin/kube-proxy
@@ -14,7 +20,7 @@ do
 done
 
 echo ">>> 启动kube-proxy服务"
-for node_ip in ${NODE_IPS[@]};
+for node_ip in ${NODE};
 do
   ssh root@${node_ip} "systemctl daemon-reload; systemctl enable kube-proxy.service --now;"
   sleep 5s;

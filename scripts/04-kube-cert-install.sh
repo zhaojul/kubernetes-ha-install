@@ -425,9 +425,17 @@ kubectl config set-credentials system:kube-proxy --client-certificate=./work/pki
 kubectl config set-context system:kube-proxy@kubernetes --cluster=kubernetes --user=system:kube-proxy --kubeconfig=./work/pki/kube-proxy.conf
 kubectl config use-context system:kube-proxy@kubernetes --kubeconfig=./work/pki/kube-proxy.conf
 
-for node in ${NODE_IPS[@]};
-do
-  ssh root@${node} "mkdir -p /var/lib/kube-proxy";
-  scp -r ./work/pki/kube-proxy.conf root@${node}:/var/lib/kube-proxy/kubeconfig.conf;
-done
+if [ ${MASTER_IS_WORKER} = true ]; then
+  for node in ${MASTER_IPS[@]} ${NODE_IPS[@]};
+  do
+    ssh root@${node} "mkdir -p /var/lib/kube-proxy";
+    scp -r ./work/pki/kube-proxy.conf root@${node}:/var/lib/kube-proxy/kubeconfig.conf;
+  done
+else
+  for node in ${NODE_IPS[@]};
+  do
+    ssh root@${node} "mkdir -p /var/lib/kube-proxy";
+    scp -r ./work/pki/kube-proxy.conf root@${node}:/var/lib/kube-proxy/kubeconfig.conf;
+  done
+fi
 
