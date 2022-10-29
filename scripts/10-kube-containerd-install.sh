@@ -11,8 +11,8 @@ for node_ip in ${NODE_IPS[@]}
           break
         else
           echo ">>> change: ${node_ip} start install containerd"
-          #yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-          scp -r ./config/containerd/docker-ce.repo root@${node_ip}:/etc/yum.repos.d/docker-ce.repo
+          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+          #scp -r ./config/containerd/docker-ce.repo root@${node_ip}:/etc/yum.repos.d/docker-ce.repo
           scp -r ./work/components/crictl/crictl root@${node_ip}:/usr/bin/crictl
           scp -r ./config/containerd/crictl.yaml root@${node_ip}:/etc/crictl.yaml
           ssh root@${node_ip} "systemctl disable --now docker.service; systemctl stop containerd.service; rm -rf /var/lib/docker; rm -rf /var/lib/containerd; rm -rf /etc/containerd"
