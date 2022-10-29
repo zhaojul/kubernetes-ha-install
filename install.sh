@@ -54,7 +54,7 @@ K8S_APP_INSTALL() {
 K8S_CSI_DRIVER_INSTALL() {
     ./scripts/17-csi-driver-nfs-install.sh
     sleep 10s
-    ./scripts/18-csi-driver-cms-install.sh
+    ./scripts/18-csi-driver-smb-install.sh
     sleep 10s
 }
 
