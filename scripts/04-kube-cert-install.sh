@@ -9,7 +9,7 @@ cat > ./work/pki/ca-config.json <<EOF
 {
   "signing": {
     "default": {
-      "expiry": "219000h"
+      "expiry": "876000h"
     },
     "profiles": {
       "etcd": {
@@ -19,7 +19,7 @@ cat > ./work/pki/ca-config.json <<EOF
             "server auth",
             "client auth"
         ],
-        "expiry": "219000h"
+        "expiry": "876000h"
       },
       "kubernetes": {
         "usages": [
@@ -28,7 +28,7 @@ cat > ./work/pki/ca-config.json <<EOF
             "server auth",
             "client auth"
         ],
-        "expiry": "219000h"
+        "expiry": "876000h"
       }
     }
   }
@@ -43,7 +43,7 @@ cat > ./work/pki/etcd-ca-csr.json <<EOF
     "size": 2048
   },
   "ca": {
-    "expiry": "219000h"
+    "expiry": "876000h"
  }
 }
 EOF
@@ -56,7 +56,7 @@ cat > ./work/pki/kube-ca-csr.json <<EOF
     "size": 2048
   },
   "ca": {
-    "expiry": "219000h"
+    "expiry": "876000h"
  }
 }
 EOF
@@ -357,7 +357,7 @@ cat > ./work/pki/front-proxy-ca-csr.json <<EOF
     "size": 2048
   },
   "ca": {
-    "expiry": "219000h"
+    "expiry": "876000h"
  }
 }
 EOF

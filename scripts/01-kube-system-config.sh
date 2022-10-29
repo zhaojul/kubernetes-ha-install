@@ -128,6 +128,44 @@ fi
 done
 }
 
+READPAR7 () {
+while true
+do
+   read -r -p "是否安装csi-driver-nfs组件? [Y/N] " ACCEPT
+   case ${ACCEPT} in
+       [yY][eE][sS]|[yY])
+       CSI_DRIVER_NFS="true";
+       break;
+       ;;
+       [nN][oO]|[nN])
+       CSI_DRIVER_NFS="false";
+       break;
+       ;;
+       *)
+       echo -e "\033[31mInvalid Input\033[0m";
+       ;;
+  esac
+done
+
+while true
+do
+   read -r -p "是否安装csi-driver-smb组件? [Y/N] " ACCEPT
+   case ${ACCEPT} in
+       [yY][eE][sS]|[yY])
+       CSI_DRIVER_SMB="true";
+       break;
+       ;;
+       [nN][oO]|[nN])
+       CSI_DRIVER_SMB="false";
+       break;
+       ;;
+       *)
+       echo -e "\033[31mInvalid Input\033[0m";
+       ;;
+  esac
+done
+}
+
 
 MASTERHOSTNAME () {
 i=0
@@ -188,6 +226,7 @@ READPAR3
 READPAR4
 READPAR5
 READPAR6
+READPAR7
 }
 
 CONFIG
@@ -246,6 +285,9 @@ KUBE_POD_CIDR="${KUBE_POD_CIDR}"
 KUBE_DNS_SVC_IP="${KUBE_DNS_SVC_IP}"
 KUBE_DNS_DOMAIN="cluster.local"
 
+CSI_DRIVER_NFS="${CSI_DRIVER_NFS}"
+CSI_DRIVER_SMB="${CSI_DRIVER_SMB}"
+
 KUBE_VERSION="v1.22.15"
 ETCD_VERSION="v3.5.5"
 COREDNS_VERSION="v1.8.4"
@@ -254,7 +296,6 @@ CRICTL_VERSION="v1.22.1"
 KERNEL_VERSION="5.4.134-1"
 CFSSL_VERSION="1.6.1"
 HELM_VERSION="v3.8.2"
-POD_INFRA_CONTAINER_IMAGE="docker.io/kubelibrary/pause:3.5"
 
 EOF
 

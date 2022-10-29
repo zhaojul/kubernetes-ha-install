@@ -16,7 +16,6 @@ ExecStart=/usr/bin/kubelet \
   --cni-bin-dir=/opt/cni/bin \
   --container-runtime=remote \
   --container-runtime-endpoint=unix:///run/containerd/containerd.sock \
-  --pod-infra-container-image=${POD_INFRA_CONTAINER_IMAGE} \
   --image-pull-progress-deadline=5m0s \
   --hostname-override=${NODE_NAME} \
   --log-dir=/var/log/kubernetes \

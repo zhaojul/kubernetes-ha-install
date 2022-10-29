@@ -51,8 +51,15 @@ K8S_APP_INSTALL() {
     sleep 10s
 }
 
+K8S_CSI_DRIVER_INSTALL() {
+    ./scripts/17-csi-driver-nfs-install.sh
+    sleep 10s
+    ./scripts/18-csi-driver-cms-install.sh
+    sleep 10s
+}
+
 ARCHIVE() {
-    ./scripts/17-archive-install.sh
+    ./scripts/19-archive-install.sh
 }
 
 
@@ -68,6 +75,7 @@ do
        K8S_CORE_INSTALL
        K8S_NETWORK_INSTALL
        K8S_APP_INSTALL
+       K8S_CSI_DRIVER_INSTALL
        ARCHIVE
        break;
        ;;

@@ -61,12 +61,15 @@ done
 echo ">>>>>> 升级系统内核,内核版本为${Kernel_Version} <<<<<<"
 for node in ${HAPROXY_IP} ${MASTER_IPS[@]} ${NODE_IPS[@]};
 do 
+  {
   echo ">>> ${node} 升级内核中"
   ssh root@${node} "mkdir /tmp/kernel-update/"
   scp -r ./work/components/kernel-lt* root@${node}:/tmp/kernel-update/
   ssh root@${node} "cd /tmp/kernel-update/; yum install kernel-lt-*.rpm -y; sleep 3s; rm -rf /tmp/kernel-update;"
   ssh root@${node} "grub2-set-default  0 && grub2-mkconfig -o /etc/grub2.cfg; sleep 5s; grubby --default-kernel; sleep 5s; reboot;"
+  }&
 done
+wait
 
 for node in ${HAPROXY_IP} ${MASTER_IPS[@]} ${NODE_IPS[@]};
  do            
@@ -127,7 +130,6 @@ do
 cat > ./work/kube-node-${node} <<EOF
 NODE_NAME="${NODE_NAMES[i]}"
 KUBE_POD_CIDR="${KUBE_POD_CIDR}"
-POD_INFRA_CONTAINER_IMAGE="${POD_INFRA_CONTAINER_IMAGE}"
 EOF
 scp -r ./work/kube-node-${node} root@${node}:/etc/sysconfig/kube-node
 let i++

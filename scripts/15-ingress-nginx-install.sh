@@ -1,13 +1,8 @@
 #!/bin/bash
 . ./.env
 
-# Default Registry
-controller_image_registry="docker.io"
-controller_image_image="kubelibrary/ingress-nginx-controller"
-controller_admissionWebhooks_patch_image_registry="docker.io"
-controller_admissionWebhooks_patch_image_image="kubelibrary/kube-webhook-certgen"
-defaultBackend_image_registry="docker.io"
-defaultBackend_image_image="kubelibrary/defaultbackend-amd64"
+# IMAGE_REGISTRY="registry.cn-hangzhou.aliyuncs.com"
+IMAGE_REGISTRY="docker.io"
 
 helm upgrade ingress-nginx \
    --kubeconfig ./work/pki/admin.conf \
@@ -21,8 +16,8 @@ helm upgrade ingress-nginx \
    --set controller.kind="Deployment" \
    --set controller.replicaCount="3" \
    --set controller.minAvailable="1" \
-   --set controller.image.registry="${controller_image_registry}" \
-   --set controller.image.image="${controller_image_image}" \
+   --set controller.image.registry="${IMAGE_REGISTRY}" \
+   --set controller.image.image="kubelibrary/ingress-nginx-controller" \
    --set controller.image.digest="" \
    --set controller.ingressClassResource.name="nginx" \
    --set controller.ingressClassResource.enable="true" \
@@ -33,13 +28,13 @@ helm upgrade ingress-nginx \
    --set controller.service.nodePorts.http="32080" \
    --set controller.service.nodePorts.https="32443" \
    --set controller.admissionWebhooks.enabled="false" \
-   --set controller.admissionWebhooks.patch.image.registry="${controller_admissionWebhooks_patch_image_registry}" \
-   --set controller.admissionWebhooks.patch.image.image="${controller_admissionWebhooks_patch_image_image}" \
+   --set controller.admissionWebhooks.patch.image.registry="${IMAGE_REGISTRY}" \
+   --set controller.admissionWebhooks.patch.image.image="kubelibrary/kube-webhook-certgen" \
    --set controller.admissionWebhooks.patch.image.digest="" \
    --set defaultBackend.enabled="true" \
    --set defaultBackend.name="defaultbackend" \
-   --set defaultBackend.image.registry="${defaultBackend_image_registry}" \
-   --set defaultBackend.image.image="${defaultBackend_image_image}" \
+   --set defaultBackend.image.registry="${IMAGE_REGISTRY}" \
+   --set defaultBackend.image.image="kubelibrary/defaultbackend-amd64" \
    --set defaultBackend.replicaCount="1" \
    --set defaultBackend.minAvailable="1" \
    --set rbac.create="true" \

@@ -1,7 +1,8 @@
 #!/bin/bash
 . ./.env
 
-IMAGE_REPOSITORY="docker.io/kubelibrary/kube-state-metrics"
+# IMAGE_REGISTRY="registry.cn-hangzhou.aliyuncs.com"
+IMAGE_REGISTRY="docker.io"
 
 helm upgrade kube-state-metrics \
     --kubeconfig ./work/pki/admin.conf \
@@ -11,9 +12,8 @@ helm upgrade kube-state-metrics \
     --wait \
     --install \
     --atomic \
-    --set image.repository="${IMAGE_REPOSITORY}" \
+    --set image.repository="${IMAGE_REGISTRY}kubelibrary/kube-state-metrics" \
     --set image.tag="v2.5.0" \
     --set podSecurityPolicy.enabled="true" \
     ./app/kube-state-metrics/kube-state-metrics-4.16.0.tgz
-
 
