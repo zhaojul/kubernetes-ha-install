@@ -34,7 +34,7 @@ do
 {
   echo ">>> ${master_ip}"
   scp -r ./work/encryption-config.yaml root@${master_ip}:/etc/kubernetes/config/encryption-config.yaml
-  scp -r ./config/audit-policy/audit-policy.yaml root@${master_ip}:/etc/kubernetes/config/audit-policy.yaml
+  scp -r ./config/kube-apiserver/audit-policy.yaml root@${master_ip}:/etc/kubernetes/config/audit-policy.yaml
   scp -r ./systemd/kube-apiserver.service root@${master_ip}:/etc/systemd/system/kube-apiserver.service
   ssh root@${master_ip} "systemctl daemon-reload && systemctl enable kube-apiserver --now;"
 }&
@@ -53,6 +53,6 @@ do
 done
 wait
 
-kubectl --kubeconfig=./work/pki/admin.conf apply -f ./config/kubelet-rbac-role/kubelet-rbac-role.yaml
+kubectl --kubeconfig=./work/pki/admin.conf apply -f ./config/kubelet/kubelet-rbac-role.yaml
 
 

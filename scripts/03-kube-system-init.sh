@@ -55,21 +55,18 @@ do
   ssh root@${node} "yum -y install epel-release; yum -y install yum-utils chrony curl wget vim sysstat net-tools openssl openssh lsof socat nfs-utils cifs-utils; systemctl disable rpcbind;"
   ssh root@${node} "timedatectl set-timezone Asia/Shanghai; timedatectl set-local-rtc 0; systemctl restart chronyd; systemctl enable chronyd; systemctl restart rsyslog; systemctl restart crond"
   ssh root@${node} "cp /etc/sysctl.conf /etc/sysctl.conf.back; echo > /etc/sysctl.conf; sysctl -p"
-  scp -r ./config/sysctl/kubernetes.conf root@${node}:/etc/sysctl.d/kubernetes.conf
+  scp -r ./config/kernel/kubernetes.conf root@${node}:/etc/sysctl.d/kubernetes.conf
 done
 
 echo ">>>>>> 升级系统内核,内核版本为${Kernel_Version} <<<<<<"
 for node in ${HAPROXY_IP} ${MASTER_IPS[@]} ${NODE_IPS[@]};
 do 
-  {
   echo ">>> ${node} 升级内核中"
   ssh root@${node} "mkdir /tmp/kernel-update/"
   scp -r ./work/components/kernel-lt* root@${node}:/tmp/kernel-update/
   ssh root@${node} "cd /tmp/kernel-update/; yum install kernel-lt-*.rpm -y; sleep 3s; rm -rf /tmp/kernel-update;"
   ssh root@${node} "grub2-set-default  0 && grub2-mkconfig -o /etc/grub2.cfg; sleep 5s; grubby --default-kernel; sleep 5s; reboot;"
-  }&
 done
-wait
 
 for node in ${HAPROXY_IP} ${MASTER_IPS[@]} ${NODE_IPS[@]};
  do            
