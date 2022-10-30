@@ -23,7 +23,7 @@ helm upgrade csi-driver-smb \
     --set image.nodeDriverRegistrar.repository="${IMAGE_REGISTRY}/kubelibrary/csi-node-driver-registrar" \
     --set image.nodeDriverRegistrar.tag="v2.5.1" \
     --set controller.replicas=2 \
-    ./app/csi-driver-smb/csi-driver-smb-v1.9.0.tgz
+    ./charts/csi-driver-smb/csi-driver-smb-v1.9.0.tgz
 fi
 
 

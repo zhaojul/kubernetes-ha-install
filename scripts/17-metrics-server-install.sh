@@ -24,5 +24,5 @@ helm upgrade metrics-server \
    --set podDisruptionBudget.enabled="true" \
    --set podDisruptionBudget.minAvailable="1" \
    --set podDisruptionBudget.maxUnavailable="0" \
-   ./app/metrics-server/metrics-server-3.8.2.tgz
+   ./charts/metrics-server/metrics-server-3.8.2.tgz
 

@@ -22,5 +22,5 @@ helm upgrade csi-driver-nfs \
     --set image.nodeDriverRegistrar.repository="${IMAGE_REGISTRY}/kubelibrary/csi-node-driver-registrar" \
     --set image.nodeDriverRegistrar.tag="v2.5.1" \
     --set controller.replicas=2 \
-   ./app/csi-driver-nfs/csi-driver-nfs-v4.1.0.tgz
+   ./charts/csi-driver-nfs/csi-driver-nfs-v4.1.0.tgz
 fi

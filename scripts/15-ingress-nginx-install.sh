@@ -40,5 +40,5 @@ helm upgrade ingress-nginx \
    --set rbac.create="true" \
    --set serviceAccount.create="true" \
    --set podSecurityPolicy.enabled="true" \
-   ./app/ingress-nginx/ingress-nginx-4.2.5.tgz
+   ./charts/ingress-nginx/ingress-nginx-4.2.5.tgz
 
