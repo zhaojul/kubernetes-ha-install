@@ -49,7 +49,7 @@ backend   kubernetes-apiserver
     mode        tcp
     server      ${MASTER_NAMES[0]} ${MASTER_IPS[0]}:6443 check weight 1 maxconn 1000 check inter 2000 rise 2 fall 3
     server      ${MASTER_NAMES[1]} ${MASTER_IPS[1]}:6443 check weight 1 maxconn 1000 check inter 2000 rise 2 fall 3
-    server      ${MASTER_NAMES[1]} ${MASTER_IPS[2]}:6443 check weight 1 maxconn 1000 check inter 2000 rise 2 fall 3
+    server      ${MASTER_NAMES[2]} ${MASTER_IPS[2]}:6443 check weight 1 maxconn 1000 check inter 2000 rise 2 fall 3
 #---------------------------------------------------------------------
 EOF
 
