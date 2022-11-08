@@ -79,12 +79,14 @@ sleep 10s;
 kubectl --kubeconfig=./work/pki/admin.conf get csr
 echo ">>> Approve kubelet server cert csr"
 kubectl --kubeconfig=./work/pki/admin.conf get csr | grep Pending | awk '{print $1}' | xargs kubectl --kubeconfig=./work/pki/admin.conf certificate approve
+sleep 10s
 
 if [ ${MASTER_IS_WORKER} = true ]; then
   for master in ${MASTER_NAMES[@]};
   do
     echo ">>> Add label kubernetes.io/role=agent for ${node}"
     kubectl --kubeconfig=./work/pki/admin.conf taint nodes ${master} node-role.kubernetes.io/master=:NoSchedule
+    kubectl --kubeconfig=./work/pki/admin.conf label nodes ${master} kubernetes.io/role=master
   done
 fi
 
