@@ -53,6 +53,7 @@ do
 done
 wait
 
+sleep 10s
 kubectl --kubeconfig=./work/pki/admin.conf apply -f ./config/kubelet/kubelet-rbac-role.yaml
 
 
