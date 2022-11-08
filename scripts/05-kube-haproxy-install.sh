@@ -36,7 +36,7 @@ for haproxy_ip in ${HAPROXY_IP};
     scp -r ./work/components/haproxy-${HAPROXY_VERSION}.tar.gz root@${haproxy_ip}:/tmp/haproxy-${HAPROXY_VERSION}.tar.gz
     ssh root@${haproxy_ip} """
         cd /tmp && tar -zxf haproxy-${HAPROXY_VERSION}.tar.gz && cd haproxy-${HAPROXY_VERSION}
-        make TARGET=linux-glic USE_PCRE=1 USE_OPENSSL=1 USE_EPOLL=1 USE_ZLIB=1 USE_PROMEX=1 USE_SYSTEMD=1
+        make TARGET=linux-glic USE_GETADDRINFO=1 USE_PCRE=1 USE_OPENSSL=1 USE_EPOLL=1 USE_ZLIB=1 USE_PROMEX=1 USE_SYSTEMD=1
         make install PREFIX=/etc/haproxy SBINDIR=/sbin MANDIR=/usr/share/man DOCDIR=/usr/share/doc
         haproxy -v
         systemctl enable --now haproxy.service; sleep 3s; systemctl status haproxy.service; sleep 3s; reboot;
