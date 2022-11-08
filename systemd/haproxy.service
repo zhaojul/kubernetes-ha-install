@@ -1,6 +1,6 @@
 [Unit]
 Description=HAProxy Load Balancer
-After=network.target syslog.target
+After=network.target syslog.target network.service syslog.service
 
 [Service]
 Environment="CONFIG=/etc/haproxy/haproxy.cfg" "KUBEAPICFG=/etc/haproxy/conf.d/kubeapi.cfg"  "PIDFILE=/run/haproxy.pid" "EXTRAOPTS=-S /run/haproxy-master.sock"
