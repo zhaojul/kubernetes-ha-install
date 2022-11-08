@@ -19,7 +19,7 @@ backend   apiserver-backend
 EOF
 
 echo ">>>>>> 正在导入HAproxy的配置并启动服务 <<<<<<"
-for haproxy_ip in ${HAPROXY_IP}
+for haproxy_ip in ${HAPROXY_IP};
   do
     echo ">>> ${haproxy_ip}"
     ssh root@${haproxy_ip} """
@@ -42,5 +42,21 @@ for haproxy_ip in ${HAPROXY_IP}
         systemctl enable --now haproxy.service; sleep 3s; systemctl status haproxy.service; sleep 3s; reboot;
         """
   done
+  
+for haproxy_ip in ${HAPROXY_IP};
+ do
+  while true
+  do
+    echo "" | telnet ${haproxy_ip} 6443 | grep 'Escape'
+    if [ $? -eq 0 ]; then
+      echo " ${haproxy_ip} haproxy is running"
+      sleep 5s
+      break
+    else
+      echo " ${haproxy_ip} haproxy not running..."
+      sleep 5s
+    fi
+  done
+done
 
 
