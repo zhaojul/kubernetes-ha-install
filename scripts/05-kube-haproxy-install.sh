@@ -2,49 +2,14 @@
 . ./.env
 echo ">>>>>> 部署haproxy <<<<<<"
 echo ">>> 生成HAproxy的配置"
-cat > ./work/haproxy.cfg << EOF
-global
-    log         127.0.0.1 local2
-    chroot      /var/lib/haproxy
-    pidfile     /var/run/haproxy.pid
-    maxconn     6000
-    user        haproxy
-    group       haproxy
-    daemon
-    stats socket /var/lib/haproxy/stats
-#---------------------------------------------------------------------
-defaults
-    mode                    tcp
-    log                     global
-    option                  tcplog
-    option                  dontlognull
-    option                  redispatch
-    retries                 3
-    timeout http-request    10s
-    timeout queue           1m
-    timeout connect         10s
-    timeout client          1m
-    timeout server          1m
-    timeout http-keep-alive 10s
-    timeout check           10s
-    maxconn                 3000
-#---------------------------------------------------------------------
-listen stats
-    bind 0.0.0.0:9100
-    mode  http
-    stats uri /status
-    stats refresh 30s
-    stats realm "Haproxy Manager"
-    stats auth admin:admin
-    stats hide-version
-    stats admin if TRUE
+cat > ./work/kubeapi.cfg << EOF
 #---------------------------------------------------------------------
 frontend  kubernetes-apiserver
-   bind *:6443
-   mode tcp
-   default_backend      kubernetes-apiserver
+   bind   0.0.0.0:6443
+   mode   tcp
+   default_backend   apiserver-backend
 #---------------------------------------------------------------------
-backend   kubernetes-apiserver
+backend   apiserver-backend
     balance     roundrobin
     mode        tcp
     server      ${MASTER_NAMES[0]} ${MASTER_IPS[0]}:6443 check weight 1 maxconn 1000 check inter 2000 rise 2 fall 3
@@ -57,9 +22,25 @@ echo ">>>>>> 正在导入HAproxy的配置并启动服务 <<<<<<"
 for haproxy_ip in ${HAPROXY_IP}
   do
     echo ">>> ${haproxy_ip}"
-    ssh root@${haproxy_ip} "hostnamectl set-hostname ${HAPROXY_NAME}; yum -y install haproxy;"
-    scp -r ./work/haproxy.cfg root@${haproxy_ip}:/etc/haproxy/haproxy.cfg
-    ssh root@${haproxy_ip} "systemctl enable --now haproxy.service; sleep 3s; systemctl status haproxy.service; sleep 3s; reboot;"
+    ssh root@${haproxy_ip} """
+        hostnamectl set-hostname ${HAPROXY_NAME};
+        groupadd -r haproxy
+        useradd -r -g haproxy -s /sbin/nologin -d /var/lib/haproxy -c 'haproxy' haproxy
+        mkdir -p /var/lib/haproxy /etc/haproxy/conf.d
+        chown -Rf haproxy:haproxy /var/lib/haproxy 
+        yum -y install make gcc gcc-c++ openssl openssl-devel pcre pcre-devel systemd systemd-devel zip unzip zlib-devel pcre pcre-devel;
+        """
+    scp -r ./config/haproxy/haproxy.cfg root@${haproxy_ip}:/etc/haproxy/haproxy.cfg
+    scp -r ./work/kubeapi.cfg root@${haproxy_ip}:/etc/haproxy/conf.d/kubeapi.cfg
+    scp -r ./systemd/haproxy.service root@${haproxy_ip}:/etc/systemd/system/haproxy.service
+    scp -r ./work/components/haproxy-${HAPROXY_VERSION}.tar.gz root@${haproxy_ip}:/tmp/haproxy-${HAPROXY_VERSION}.tar.gz
+    ssh root@${haproxy_ip} """
+        cd /tmp && tar -zxf haproxy-${HAPROXY_VERSION}.tar.gz && cd haproxy-${HAPROXY_VERSION}
+        make TARGET=linux-glic USE_PCRE=1 USE_OPENSSL=1 USE_EPOLL=1 USE_ZLIB=1 USE_PROMEX=1 USE_SYSTEMD=1
+        make install PREFIX=/etc/haproxy SBINDIR=/sbin MANDIR=/usr/share/man DOCDIR=/usr/share/doc
+        haproxy -v
+        systemctl enable --now haproxy.service; sleep 3s; systemctl status haproxy.service; sleep 3s; reboot;
+        """
   done
 
 

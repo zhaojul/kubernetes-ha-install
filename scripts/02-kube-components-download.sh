@@ -12,6 +12,7 @@ curl -LO http://storage.corpintra.plus/crictl/crictl-${CRICTL_VERSION}-linux-amd
 curl -LO http://storage.corpintra.plus/helm/helm-${HELM_VERSION}-linux-amd64.tar.gz
 curl -LO http://storage.corpintra.plus/elrepo/kernel/kernel-lt-${KERNEL_VERSION}.el7.elrepo.x86_64.rpm
 curl -LO http://storage.corpintra.plus/elrepo/kernel/kernel-lt-devel-${KERNEL_VERSION}.el7.elrepo.x86_64.rpm
+curl -LO http://storage.corpintra.plus/haproxy/haproxy-${HAPROXY_VERSION}.tar.gz
 curl -L  http://storage.corpintra.plus/cfssl/cfssl_${CFSSL_VERSION}_linux_amd64 -o cfssl
 curl -L  http://storage.corpintra.plus/cfssl/cfssl-certinfo_${CFSSL_VERSION}_linux_amd64 -o cfssl-certinfo
 curl -L  http://storage.corpintra.plus/cfssl/cfssljson_${CFSSL_VERSION}_linux_amd64 -o cfssljson
