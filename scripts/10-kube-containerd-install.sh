@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 echo ">>>>>> 安装 containerd <<<<<<"
 
 if [ ${MASTER_IS_WORKER} = true ]; then

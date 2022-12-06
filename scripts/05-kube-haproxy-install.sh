@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 echo ">>>>>> 部署haproxy <<<<<<"
 echo ">>> 生成HAproxy的配置"
 cat > ./work/kubeapi.cfg << EOF

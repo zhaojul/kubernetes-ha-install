@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 rm -rf ./work
 mkdir -p ./work/components
 cd ./work/components

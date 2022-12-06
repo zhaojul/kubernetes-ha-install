@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 echo ">>>>>> 部署kube-proxy <<<<<<"
 
 if [ ${MASTER_IS_WORKER} = true ]; then

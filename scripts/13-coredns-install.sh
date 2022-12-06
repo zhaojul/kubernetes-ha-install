@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 echo ">>>>>> 部署coredns <<<<<<"
 
 COREDNS_IMAGE="docker.io/kubelibrary/coredns"

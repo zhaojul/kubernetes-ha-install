@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 
 # IMAGE_REGISTRY="registry.cn-hangzhou.aliyuncs.com"
 IMAGE_REGISTRY="docker.io"

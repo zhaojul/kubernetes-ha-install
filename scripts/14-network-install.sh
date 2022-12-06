@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 
 echo ">>>>>>正在安装网络组件<<<<<<"
 

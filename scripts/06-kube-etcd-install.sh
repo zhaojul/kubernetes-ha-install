@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 echo ">>>>>> 部署etcd集群 <<<<<<"
 rm -rf ./work/sysconfig
 mkdir ./work/sysconfig

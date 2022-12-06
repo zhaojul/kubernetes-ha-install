@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 echo ">>>>>> 部署kube-scheduler <<<<<<"
 echo ">>> 推送kube-scheduler到所有Master节点"
 for master_ip in ${MASTER_IPS[@]}

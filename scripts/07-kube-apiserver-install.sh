@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 echo ">>>>>> 部署apiserver <<<<<<"
 echo ">>>>>>推送kube-apiserver,kubeadm,kubectl到所有Master节点"
 for master_ip in ${MASTER_IPS[@]}

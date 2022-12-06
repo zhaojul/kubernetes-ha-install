@@ -1,5 +1,6 @@
 #!/bin/bash
 . ./.env
+. ./.version
 rm -rf ./work/pki
 mkdir -p ./work/pki/etcd
 
